@@ -1,0 +1,82 @@
+# Builds the Windows and Linux installers on GitHub's computers and attaches
+# them to the release, so people can download them from the Releases page.
+#
+# How to publish a new version:
+#   1. Raise APP_VERSION in app/branding.py (e.g. 1.2.0) and upload the change.
+#   2. On GitHub: Releases > "Draft a new release" > tag  v1.2.0  > Publish.
+#   3. Wait about 10-15 minutes. The installers appear under that release.
+# You can also run it by hand from the Actions tab (files then appear under
+# "Artifacts" on the run page instead of on a release).
+name: Build installers
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to attach files to the release
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Make sure Inno Setup is available
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+      - name: Build
+        shell: cmd
+        env:
+          OUTPUT_DIR: ${{ github.workspace }}\release\Windows
+          CI: "true"
+        run: build_windows.bat
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Windows-installers
+          path: release/Windows/*
+
+  linux:
+    runs-on: ubuntu-22.04   # older base = runs on more Linux versions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build
+        env:
+          OUTPUT_DIR: ${{ github.workspace }}/release/Linux
+        run: bash build_linux.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Linux-installers
+          path: release/Linux/*
+
+  publish:
+    # Only when a release was published (not for manual runs)
+    if: github.event_name == 'release'
+    needs: [windows, linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+      - name: Give the files fixed names (so the README download links always work)
+        run: |
+          cd files
+          ls -l
+          mv *-Setup-*.exe       TechmiarySchoolResultManager-Setup-Windows.exe
+          mv *-Portable-*.exe    TechmiarySchoolResultManager-Portable-Windows.exe
+          mv *_amd64.deb         techmiary-school-result-manager_amd64.deb
+          mv *-linux-x64.tar.gz  TechmiarySchoolResultManager-Linux-x64.tar.gz
+          mv *-x86_64            TechmiarySchoolResultManager-Linux-x86_64
+          ls -l
+      - name: Attach files to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" files/* --clobber --repo "${{ github.repository }}"
