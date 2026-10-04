@@ -117,6 +117,14 @@ def printing():
     assert os.path.getsize(pdf2) > 1000, "broadsheet PDF is empty"
 
 
+def preview_window():
+    from qtpy.QtPrintSupport import QPrintPreviewDialog
+    for landscape in (False, True):
+        dialog = QPrintPreviewDialog(make_printer(landscape), None)
+        dialog.paintRequested.connect(lambda p: None)
+        dialog.close()
+
+
 def backup():
     path = os.path.join(TMP, "backup.db")
     db.backup_to(path)
@@ -127,6 +135,7 @@ step("sample data", sample_data)
 step("pop-up forms", dialogs)
 step("main window and every screen", main_window)
 step("print result sheets and broadsheet to PDF", printing)
+step("print preview window", preview_window)
 step("backup", backup)
 db.close()
 print(f"Smoke test passed ({steps_ok} checks).")
