@@ -1,1 +1,3 @@
+# For running from source and for the Linux build (Qt 6).
 PySide6>=6.5
+QtPy>=2.4

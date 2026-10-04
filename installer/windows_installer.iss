@@ -11,7 +11,7 @@
 ; ---------------------------------------------------------------------------
 
 #ifndef MyAppVersion
-  #define MyAppVersion "1.1.0"
+  #define MyAppVersion "1.2.0"
 #endif
 #ifndef OutputDir
   #define OutputDir "..\..\Installers\Windows"
@@ -46,8 +46,9 @@ UninstallDisplayName={#MyAppName}
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
-ArchitecturesAllowed=x64compatible
-ArchitecturesInstallIn64BitMode=x64compatible
+; 32-bit program: installs on both 32-bit and 64-bit Windows.
+; Windows 7 SP1 is the oldest supported version (7, 8, 8.1, 10, 11).
+MinVersion=6.1sp1
 PrivilegesRequiredOverridesAllowed=dialog
 CloseApplications=yes
 
@@ -64,6 +65,8 @@ Source: "..\dist\TechmiarySchoolResultManager\*"; DestDir: "{app}"; Flags: ignor
 [InstallDelete]
 ; Remove old program files before an upgrade (school data is NOT here, it is safe)
 Type: filesandordirs; Name: "{app}\_internal"
+Type: filesandordirs; Name: "{app}\PySide2"
+Type: filesandordirs; Name: "{app}\PySide6"
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -73,3 +76,25 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+[Code]
+// Version 1.1.0 was a 64-bit program. This 32-bit installer cannot see it in the
+// normal place, so we look for it and remove it quietly first (school data,
+// kept in %APPDATA%, is NOT touched). This avoids two copies in "Installed apps".
+const
+  OldKey = 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{C5152723-6CA0-4685-A65D-CA592D0CC29B}_is1';
+
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+var
+  Uninstaller: String;
+  ResultCode: Integer;
+begin
+  Result := '';
+  if IsWin64 and RegQueryStringValue(HKLM64, OldKey, 'UninstallString', Uninstaller) then
+  begin
+    Uninstaller := RemoveQuotes(Uninstaller);
+    if FileExists(Uninstaller) then
+      Exec(Uninstaller, '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART', '',
+           SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
+end;

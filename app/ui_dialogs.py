@@ -7,9 +7,9 @@ import os
 import shutil
 import time
 
-from PySide6.QtCore import Qt, QDate
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QDateEdit, QDialog, QDialogButtonBox,
+from qtpy.QtCore import Qt, QDate
+from qtpy.QtGui import QPixmap
+from qtpy.QtWidgets import (QCheckBox, QComboBox, QDateEdit, QDialog, QDialogButtonBox,
                                QFileDialog, QFormLayout, QGridLayout, QHBoxLayout, QLabel,
                                QLineEdit, QListWidget, QListWidgetItem, QPushButton,
                                QTextEdit, QVBoxLayout)

@@ -10,13 +10,15 @@ By **Techmiary Technology Concept** · [www.techmiary.tech](https://www.techmiar
 
 | System | Download | How to install |
 |---|---|---|
-| **Windows 10/11** | [**Setup (recommended)**](../../releases/latest/download/TechmiarySchoolResultManager-Setup-Windows.exe) | Double-click and follow the steps |
+| **Windows 7, 8, 8.1, 10, 11** | [**Setup (recommended)**](../../releases/latest/download/TechmiarySchoolResultManager-Setup-Windows.exe) | Double-click and follow the steps |
 | Windows (no install) | [Portable .exe](../../releases/latest/download/TechmiarySchoolResultManager-Portable-Windows.exe) | Just double-click to run; good for a flash drive |
 | **Ubuntu / Debian / Mint / Zorin** | [**.deb package**](../../releases/latest/download/techmiary-school-result-manager_amd64.deb) | Double-click and choose *Install* |
 | Any Linux | [Standalone program](../../releases/latest/download/TechmiarySchoolResultManager-Linux-x86_64) | Right-click › Properties › allow executing, then double-click |
 | Any Linux | [.tar.gz](../../releases/latest/download/TechmiarySchoolResultManager-Linux-x64.tar.gz) | Extract, then run `./install.sh` |
 
 All versions: see the [Releases page](../../releases).
+
+📘 **Step-by-step instructions:** [Installation Guide](INSTALL.md)
 
 **First login:** username `admin`, password `admin123`. You'll be asked to change it straight away.
 

@@ -14,9 +14,10 @@ import sys
 import traceback
 from datetime import datetime
 
-from PySide6.QtCore import Qt, QTimer, Signal
-from PySide6.QtGui import QAction, QIcon
-from PySide6.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel, QListWidget,
+import qt_compat  # must come first: makes the code work on Qt 5 and Qt 6
+from qtpy.QtCore import Qt, QTimer, Signal
+from qtpy.QtGui import QAction, QIcon
+from qtpy.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel, QListWidget,
                                QListWidgetItem, QMainWindow, QPushButton, QStackedWidget,
                                QVBoxLayout, QWidget)
 
@@ -147,7 +148,8 @@ class MainWindow(QMainWindow):
                   "Register students, enter CA and exam scores, and print term results "
                   "for primary and secondary schools.<br><br>"
                   f"Developed by <b>{COMPANY_NAME}</b><br>"
-                  f'<a href="{COMPANY_URL}">{COMPANY_WEBSITE}</a>', "About"))
+                  f'<a href="{COMPANY_URL}">{COMPANY_WEBSITE}</a><br><br>'
+                  f'<small>{qt_compat.qt_description()}</small>', "About"))
         help_menu.addAction(a)
 
     def update_top_bar(self):
@@ -237,6 +239,15 @@ def excepthook(exc_type, exc, tb):
 
 def main():
     sys.excepthook = excepthook
+    if sys.platform.startswith("win"):
+        # Show our own icon on the Windows taskbar (Windows 7 and newer)
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+                "Techmiary.SchoolResultManager")
+        except Exception:
+            pass
+    qt_compat.prepare_application()
     app = QApplication(sys.argv)
     app.setApplicationName(APP_TITLE)
     app.setApplicationVersion(APP_VERSION)

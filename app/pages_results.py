@@ -3,10 +3,10 @@ pages_results.py - Screens for teachers and results:
 Enter Scores, Remarks & Attendance, and Results (print / PDF).
 """
 
-from PySide6.QtCore import QEvent, QRegularExpression, Qt, QTimer
-from PySide6.QtGui import (QBrush, QColor, QKeySequence, QRegularExpressionValidator,
+from qtpy.QtCore import QEvent, QRegularExpression, Qt, QTimer
+from qtpy.QtGui import (QBrush, QColor, QKeySequence, QRegularExpressionValidator,
                            QShortcut)
-from PySide6.QtWidgets import (QAbstractItemDelegate, QAbstractItemView, QApplication,
+from qtpy.QtWidgets import (QAbstractItemDelegate, QAbstractItemView, QApplication,
                                QComboBox, QHBoxLayout, QLabel, QLineEdit, QPushButton,
                                QStyledItemDelegate)
 

@@ -28,6 +28,10 @@ VPY="$SRC/.venv-build/bin/python"
 "$VPY" -m pip install --upgrade pip
 "$VPY" -m pip install -r requirements.txt pyinstaller
 
+# ---- Self-test: open every screen and print to PDF (stops if broken) -------
+echo "Running self-test..."
+QT_QPA_PLATFORM=offscreen "$VPY" tools/smoke_test.py
+
 # ---- 2. Name and version from app/branding.py -----------------------------
 VER="$("$VPY" tools/make_version_info.py get VERSION)"
 EXE="$("$VPY" tools/make_version_info.py get EXE)"

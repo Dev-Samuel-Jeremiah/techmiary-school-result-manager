@@ -5,10 +5,10 @@ message boxes, table helpers, the app colour theme and printing.
 
 import os
 
-from PySide6.QtCore import Qt, QUrl, QMarginsF
-from PySide6.QtGui import QImage, QPageLayout, QPageSize, QTextDocument
-from PySide6.QtPrintSupport import QPrinter, QPrintPreviewDialog
-from PySide6.QtWidgets import (QAbstractItemView, QComboBox, QFileDialog, QHeaderView,
+from qtpy.QtCore import Qt, QUrl, QMarginsF
+from qtpy.QtGui import QImage, QPageLayout, QPageSize, QTextDocument
+from qtpy.QtPrintSupport import QPrinter, QPrintPreviewDialog
+from qtpy.QtWidgets import (QAbstractItemView, QComboBox, QFileDialog, QHeaderView,
                                QMessageBox, QTableWidget, QTableWidgetItem)
 
 from database import SECTIONS, TERMS

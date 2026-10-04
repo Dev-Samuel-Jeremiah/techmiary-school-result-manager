@@ -1,0 +1,8 @@
+# Windows build that runs on Windows 7, 8, 8.1, 10 and 11 (32-bit and 64-bit).
+# Must be used with Python 3.8 (32-bit) - the last Python that supports Windows 7/8.
+# Qt 5.15 (PySide2) is used because Qt 6 only runs on Windows 10 and newer.
+# Versions are pinned on purpose: newer releases dropped Python 3.8 / Windows 7.
+PySide2==5.15.2.1
+QtPy==2.4.1
+pyinstaller==5.13.2
+pyinstaller-hooks-contrib==2023.10

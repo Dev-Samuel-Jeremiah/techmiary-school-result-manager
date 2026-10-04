@@ -10,7 +10,7 @@ COMPANY_WEBSITE = "www.techmiary.tech"
 COMPANY_URL = "https://www.techmiary.tech"
 
 PRODUCT_NAME = "Techmiary School Result Manager"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.2.0"
 
 # Name used for the program file (.exe) and for the data folder.
 # Keep it without spaces.

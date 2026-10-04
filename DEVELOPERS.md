@@ -29,7 +29,8 @@ First login: username `admin`, password `admin123` (you must change it straight 
 1. Make your changes in `app/`.
 2. Open `app/branding.py` and raise `APP_VERSION` (for example `1.1.0` → `1.2.0`).
 3. Build:
-   - **Windows:** double-click `build_windows.bat` (on a Windows PC with Python installed)
+   - **Windows:** double-click `build_windows.bat` (on a Windows 10/11 PC with
+     [Python 3.8.10 32-bit](https://www.python.org/ftp/python/3.8.10/python-3.8.10.exe) installed)
    - **Linux:** run `./build_linux.sh` (on a Linux PC)
 4. Give schools the new files from the `Installers` folder. Running the new
    Setup.exe (or .deb) upgrades the program in place; their data is kept.
@@ -49,6 +50,21 @@ The repository builds the installers by itself (see `.github/workflows/build-ins
 
 To test a build without publishing, open **Actions › Build installers › Run workflow**
 and download the results from the run page.
+
+## Why the Windows build uses Python 3.8 and Qt 5
+
+Qt 6 (PySide6) and Python 3.9+ only run on Windows 10/11. To support Windows 7, 8 and
+8.1 as well, the Windows program is built with **Python 3.8 (32-bit)** and **Qt 5.15
+(PySide2)** — pinned in `requirements-windows.txt`. A 32-bit program runs on both 32-bit
+and 64-bit Windows, so one installer covers every PC. Linux uses Qt 6.
+
+The code works with both because every screen imports Qt through **QtPy**
+(`from qtpy.QtWidgets import ...`, never `from PySide6...`), and `app/qt_compat.py`
+fills the small gaps. Keep it that way when you add new code, and keep new code
+Python 3.8-compatible (e.g. no `match`, no `list[int]` type hints, no `str | None`).
+
+Both build scripts first run `tools/smoke_test.py`, which opens every screen and prints
+sample results to PDF; the build stops if anything fails.
 
 ## Changing the name or company details
 
@@ -78,6 +94,7 @@ Use **File › Back Up Database** often and keep copies on a flash drive.
 | File | What it contains |
 |---|---|
 | `app/branding.py` | **Product name, company name, website and version number** |
+| `app/qt_compat.py` | Lets the code run on Qt 5 (Windows 7/8) and Qt 6 |
 | `app/main.py` | Starts the program, login and main window |
 | `app/database.py` | Database tables, default grading and subjects |
 | `app/results.py` | Totals, grades and positions, and the result sheet layout |
@@ -91,4 +108,6 @@ To change how the printed result looks, edit `student_sheet_html()` in `app/resu
 | `installer/windows_installer.iss` | Windows Setup.exe settings (Inno Setup) |
 | `installer/linux/` | Linux install/uninstall scripts |
 | `tools/make_version_info.py` | Puts company/version details into the .exe |
+| `tools/smoke_test.py` | Automatic self-test run before every build |
+| `requirements-windows.txt` | Pinned versions for the Windows 7–11 build |
 | `.github/workflows/build-installers.yml` | Automatic builds on GitHub |

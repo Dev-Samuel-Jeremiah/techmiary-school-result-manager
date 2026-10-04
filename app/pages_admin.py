@@ -6,9 +6,9 @@ Dashboard, Students, Classes & Subjects, Staff Accounts and Settings.
 import os
 import shutil
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QFrame, QGridLayout,
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPixmap
+from qtpy.QtWidgets import (QComboBox, QFileDialog, QFormLayout, QFrame, QGridLayout,
                                QGroupBox, QHBoxLayout, QInputDialog, QLabel, QLineEdit,
                                QPushButton, QSplitter, QTabWidget,
                                QVBoxLayout, QWidget)
