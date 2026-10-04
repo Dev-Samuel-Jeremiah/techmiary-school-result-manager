@@ -222,11 +222,26 @@ class ResultDocument(QTextDocument):
 
 
 def make_printer(landscape=False, pdf_path=None):
+    """A4 printer with 10 mm margins. Works on Qt 5 (Windows 7/8 build) and Qt 6."""
     printer = QPrinter(QPrinter.PrinterMode.HighResolution)
-    printer.setPageSize(QPageSize(QPageSize.PageSizeId.A4))
-    printer.setPageOrientation(QPageLayout.Orientation.Landscape if landscape
-                               else QPageLayout.Orientation.Portrait)
-    printer.setPageMargins(QMarginsF(10, 10, 10, 10), QPageLayout.Unit.Millimeter)
+    orientation = (QPageLayout.Orientation.Landscape if landscape
+                   else QPageLayout.Orientation.Portrait)
+    layout = QPageLayout(QPageSize(QPageSize.PageSizeId.A4), orientation,
+                         QMarginsF(10, 10, 10, 10), QPageLayout.Unit.Millimeter)
+    try:
+        # One call that sets paper size, orientation and margins (Qt 5.3+ and Qt 6)
+        ok = printer.setPageLayout(layout)
+    except (TypeError, AttributeError):
+        ok = False
+    if ok is False:
+        # Fallback: set each part separately
+        printer.setPageSize(QPageSize(QPageSize.PageSizeId.A4))
+        printer.setPageOrientation(orientation)
+        try:
+            printer.setPageMargins(QMarginsF(10, 10, 10, 10), QPageLayout.Unit.Millimeter)
+        except TypeError:
+            # Qt 5 form of the same call
+            printer.setPageMargins(10, 10, 10, 10, QPrinter.Unit.Millimeter)
     if pdf_path:
         printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
         printer.setOutputFileName(pdf_path)
